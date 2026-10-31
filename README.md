@@ -10,15 +10,9 @@ Katya 工作流编排插件：为 DeepSeek Harness 提供一个从文件加载�
 
 ## 安装
 
-在本目录执行：
+在 DSH 里添加插件，输入本仓库地址 **`https://github.com/AkezI-T/dsh-katya-workflow`**（也接受本地目录）。依赖解析、挂载与 bundle 注册都由 DSH 完成，不需要手工改 profile 或预设。
 
-```bash
-dsh plugin --profile desktop add link:<本目录绝对路径>
-```
-
-或手工写入：在目标 profile 的 `package.json` 中把本包加入 `dependencies`（`link:<路径>`）与 `dsh.profile.bundles`，随后在该 profile 目录执行 `pnpm install`。
-
-bundle 行在进程启动时加载，**安装或修改后需重启 DSH**，预设列表才会出现变更。
+重启 Host 后生效。
 
 ## 文件结构
 
