@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Katya Workflow",
+    "description": "Katya workflow plugin: the persona loads from the bundled persona.md, and work steps get a finer presentation tier."
+  }
+}
