@@ -1,4 +1,8 @@
 node_modules/
+
+# 调研与设计资料留在本地，不进版本库
+docs/
+notes/
 *.log
 .DS_Store
 Thumbs.db
