@@ -3,7 +3,7 @@
       name: '@deepseek-ai/dsh-agent-preset'
       config:
         id: katya-workflow
-        name: Katya-Workflow
+        name: Katya
         description: Katya 工作流编排队列：人格从包内 persona.md 加载，工具面沿用 katya-ptc 的接线。
         order: 13
         plugins:
