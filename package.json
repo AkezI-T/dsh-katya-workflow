@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Katya 工作流编排队列：人格随包内 persona.md 加载，工具面沿用 katya-ptc 接线。",
   "icon": "assets/plugin-icon.png",
+  "license": "MIT",
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
