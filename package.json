@@ -3,15 +3,41 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Katya 预设组合：人格随包内 persona.md 加载，提供工作流编排与创造模式两个预设。",
+  "description": "Katya 预设组合：人格随包内 persona.md 加载，提供工作流编排与创造模式两个预设，并附带 Katya Steps 步骤摘要组件。",
   "icon": "assets/plugin-icon.png",
   "license": "MIT",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./persona-file.mjs": "./persona-file.mjs",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "lib/",
+    "*.patch.yml",
+    "persona-file.mjs",
+    "persona.md",
+    "locale/",
+    "assets/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "node tools/build.mjs"
+  },
   "dsh": {
     "bundle": {
       "patch": [
         "./cordis.patch.yml",
-        "./katya-creator.patch.yml"
+        "./katya-creator.patch.yml",
+        "./steps.patch.yml"
       ]
+    },
+    "client": {
+      "platform": "web",
+      "inject": []
     }
   }
 }

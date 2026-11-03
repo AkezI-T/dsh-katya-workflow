@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Katya Workflow",
-    "description": "Katya preset collection: the persona loads from the bundled persona.md, and the package offers both a workflow preset and a Creator-mode preset with a finer presentation tier for work steps."
+    "description": "Katya preset collection: the persona loads from the bundled persona.md, the package offers both a workflow preset and a Creator-mode preset, and it ships the Katya Steps summary component."
   }
 }
