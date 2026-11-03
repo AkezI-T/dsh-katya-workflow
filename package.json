@@ -11,6 +11,7 @@
     ".": "./lib/index.js",
     "./client": "./lib/client.js",
     "./persona-file.mjs": "./persona-file.mjs",
+    "./custom-bash.mjs": "./custom-bash.mjs",
     "./package.json": "./package.json",
     "./locale/*.json": "./locale/*.json"
   },
@@ -18,10 +19,12 @@
     "lib/",
     "*.patch.yml",
     "persona-file.mjs",
+    "custom-bash.mjs",
     "persona.md",
     "locale/",
     "assets/",
     "README.md",
+    "NOTICE",
     "LICENSE"
   ],
   "scripts": {

@@ -1,0 +1,8 @@
+本仓库以 MIT 许可发布，见 LICENSE。
+
+custom-bash.mjs 移植自 https://github.com/xiaobright/dsh-anchored-standard （MIT 许可）的
+combo-anchored/custom-bash.mjs。改动限于文件头注释；实现正文与上游一致。该文件在 win32 上
+经 ctx.subprocess.spawn 提供与官方同名的 `bash` 工具，Git Bash 的位置按本机探测，不写死
+安装路径。
+
+上游的版权与 MIT 许可声明见其开源仓库。

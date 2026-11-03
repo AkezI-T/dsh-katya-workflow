@@ -84,7 +84,19 @@
             name: '@deepseek-ai/dsh-tool-bash'
             disabled: !!js process.platform === 'win32'
 
-          # The Windows shell. Every other platform is served by `tool-bash` above.
+          # Windows shell: Git Bash at whatever install this machine has. The
+          # plugin probes `git` on PATH, then the well-known Git-for-Windows
+          # roots, then plain `bash`, and never falls back to pwsh. `tool-bash`
+          # above cannot serve win32: the `bash-sandbox` executor behind it is
+          # mounted only off Windows.
+          - id: custom-bash
+            name: '@local/dsh-katya-workflow/custom-bash.mjs'
+            disabled: !!js process.platform !== 'win32'
+            config:
+              timeoutMs: 300000
+
+          # Special-task shell: pwsh for Windows-specific / .NET / PowerShell-native
+          # work only; bash above stays the default for everything else.
           - id: tool-pwsh
             name: '@deepseek-ai/dsh-tool-pwsh'
             disabled: !!js process.platform !== 'win32'
