@@ -84,20 +84,7 @@
             name: '@deepseek-ai/dsh-tool-bash'
             disabled: !!js process.platform === 'win32'
 
-          # Windows shell: Git Bash replaces pwsh. `custom-bash.mjs` registers `bash`
-          # through ctx.subprocess.spawn (the PTY backend is linux/darwin-only);
-          # bashPath is explicit so discovery never guesses the install. Non-zero exit
-          # is reported not thrown; no OS sandbox confinement on Windows. The
-          # non-Windows case is served by the `tool-bash` row above.
-          - id: custom-bash
-            name: '@local/dsh-katya-family-preset/custom-bash.mjs'
-            disabled: !!js process.platform !== 'win32'
-            config:
-              bashPath: 'F:\Program Files\Git\bin\bash.exe'
-              timeoutMs: 300000
-
-          # Special-task shell: pwsh for Windows-specific / .NET / PowerShell-native
-          # work only; the persona keeps bash the default for everything else.
+          # The Windows shell. Every other platform is served by `tool-bash` above.
           - id: tool-pwsh
             name: '@deepseek-ai/dsh-tool-pwsh'
             disabled: !!js process.platform !== 'win32'
@@ -128,30 +115,6 @@
 
           - id: tool-schedule
             name: '@deepseek-ai/dsh-tool-schedule'
-
-          # ── background terminal ─────────────────────────────────────────────────────
-          #
-          # A persistent interactive shell the agent can keep using across tool calls and
-          # turns: read incremental output, write stdin, SIGINT the foreground command and
-          # then carry on with the same shell. Phase 1 is Bash only — `shellDialect: pwsh`
-          # is rejected at config time because Pwsh framing is a different contract
-          # (`$?` is a boolean there, not an exit code) and is not implemented yet.
-          #
-          # shellPath is REQUIRED and has no platform default: the plugin fails to mount
-          # without it, deliberately, so the session dialect is never guessed. It points at
-          # the same Git Bash the `custom-bash` row above uses.
-          #
-          # What it consumes stays on the HOST plane: `ctx.subprocess.spawnTerminal` (the
-          # PTY), `ctx.sandboxPolicy` + `ctx.get('sandbox')` (the one confinement boundary,
-          # resolved once at shell startup), `ctx.sessionProjections` (the sandbox mode
-          # fence) and `ctx.jobs` (the registry the /jobs roster reads). It registers tools
-          # only and provides no service, so it needs no isolate realm.
-          - id: background-terminal
-            name: dsh-background-terminal
-            config:
-              shellPath: 'C:\Users\Lenovo\AppData\Local\Programs\PowerShell\7.4\pwsh.exe'
-              shellDialect: pwsh
-              logLevel: debug
 
           # ── skills ──────────────────────────────────────────────────────────────────
 

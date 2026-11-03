@@ -56,13 +56,6 @@
             name: '@deepseek-ai/dsh-tool-bash'
             disabled: !!js process.platform === 'win32'
 
-          - id: custom-bash
-            name: '@local/dsh-katya-family-preset/custom-bash.mjs'
-            disabled: !!js process.platform !== 'win32'
-            config:
-              bashPath: 'F:\Program Files\Git\bin\bash.exe'
-              timeoutMs: 300000
-
           - id: tool-pwsh
             name: '@deepseek-ai/dsh-tool-pwsh'
             disabled: !!js process.platform !== 'win32'
@@ -84,15 +77,6 @@
 
           - id: tool-schedule
             name: '@deepseek-ai/dsh-tool-schedule'
-
-          # ── background terminal ─────────────────────────────────────────────────────
-
-          - id: background-terminal
-            name: dsh-background-terminal
-            config:
-              shellPath: 'C:\Users\Lenovo\AppData\Local\Programs\PowerShell\7.4\pwsh.exe'
-              shellDialect: pwsh
-              logLevel: debug
 
           # ── skills ──────────────────────────────────────────────────────────────────
 
