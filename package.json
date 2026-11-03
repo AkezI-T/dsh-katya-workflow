@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Katya 工作流编排队列：人格随包内 persona.md 加载，工具面沿用 katya-ptc 接线。",
+  "description": "Katya 预设组合：人格随包内 persona.md 加载，提供工作流编排与创造模式两个预设。",
   "icon": "assets/plugin-icon.png",
   "license": "MIT",
   "dsh": {
     "bundle": {
-      "patch": "./cordis.patch.yml"
+      "patch": [
+        "./cordis.patch.yml",
+        "./katya-creator.patch.yml"
+      ]
     }
   }
 }
