@@ -217,13 +217,12 @@
           # registered once. This preset contributes the delegation TOOLS, which resolve
           # that host registry.
           #
-          # `tool-subagent-control` (send_message, interrupt_agent) and its `list-agents`
-          # entry point (list_agents) are declared under the canonical ids the Team bundle
-          # addresses, exactly as the shipped `ptc` does: while
-          # `@deepseek-ai/dsh-experimental-agent-team-profile` is installed its
-          # `tool-agent-team` owns those three names, and without that bundle these rows
-          # are what provides them. `one-shot` keeps durable collaboration on teammates
-          # rather than continuable children, matching that profile layer.
+          # `tool-subagent-control` registers the child-control trio — `list_agents`,
+          # `send_message`, `interrupt_agent` — in this preset's scope, exactly as the
+          # shipped `ptc` declares it. While
+          # `@deepseek-ai/dsh-experimental-agent-team-profile` is installed, its
+          # `tool-agent-team` also installs Team-scoped versions in each member's own
+          # Agent scope; without that bundle this row is what provides the trio.
           #
           # `workflows` is different — nothing outside an agent reads it — so every row
           # that reaches it shares one entry-local realm here, and a consumer left
@@ -236,9 +235,6 @@
             config:
               - id: tool-subagent-control
                 name: '@deepseek-ai/dsh-tool-subagent-control'
-
-              - id: tool-subagent-list-agents
-                name: '@deepseek-ai/dsh-tool-subagent-control/list-agents'
 
               # Children default to DeepSeek Flash at high thinking; the settings section
               # `subagent-model-selection` is what the delegating model may pick from.
