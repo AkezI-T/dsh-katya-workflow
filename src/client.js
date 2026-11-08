@@ -138,6 +138,17 @@ window.__ModuleLoader__.load({
       return ''
     }
 
+    // Whether a string field has finished arriving. A host without the check keeps
+    // the previous behaviour, since every other reader tolerates a growing value.
+    function argComplete(args, key) {
+      if (!args || typeof args.complete !== 'function') return true
+      try {
+        return args.complete(key) === true
+      } catch (error) {
+        return true
+      }
+    }
+
     function contentText(content, limit) {
       if (!Array.isArray(content)) return ''
       var parts = []
@@ -348,7 +359,14 @@ window.__ModuleLoader__.load({
 
       var description = readArg(block.args, 'description', 200)
       var code = readArg(block.args, 'code', 6000)
-      if (description === '') description = trimTo(String(code).split('\n')[0] || '', 120)
+      // The arguments stream in declaration order, so a running call carries the
+      // code long before its description exists. Standing the code's first line in
+      // for it would show that line and then swap once the real text arrives.
+      if (description === '' && settled) description = trimTo(String(code).split('\n')[0] || '', 120)
+      // A description that is still arriving would restart the reveal on every
+      // chunk; hold it back until the field closes so the animation runs once,
+      // over the text it was written for.
+      if (description !== '' && !settled && !argComplete(block.args, 'description')) description = ''
       var output = settled ? contentText(block.content, 1600) : ''
       if (settled && output === '' && block.error) {
         output = trimTo(String(block.error.reason || block.error.name || ''), 1600)
