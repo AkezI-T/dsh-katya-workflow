@@ -8,6 +8,7 @@ Katya 工作流编排插件：为 DeepSeek Harness 提供两个从文件加载�
 - **提供 `Katya` 与 `Katya-Creator` 两个预设**。前者是工作流编排面；后者在同一个人格上挂创造模式工具（运行时探查、插件管理、创造技能），可自行编写 DSH 插件与预设。
 - **Windows 上自带 `bash`**。官方的 `bash-sandbox` 执行器只在非 Windows 挂载，预设自带的同名工具经 `ctx.subprocess.spawn` 执行 Git Bash；可执行文件按本机探测（PATH 上的 `git` 推出的安装根 → Git for Windows 常见安装根 → PATH 上的 `bash`），配置里不写安装路径。探测全部落空时报错并给出补救方式，不会退回 pwsh 或 cmd。
 - **提供 `Katya Steps` 步骤摘要组件**。在「工作步骤显示」里增加第五档：运行代码的子步骤在结算后自动收起。删掉挂载行并重启即回到官方渲染，不残留数据。
+- **工具说明的语言约定随包注入**。`katya-steps` 那行在 profile 平面注册一段提示词，`description` 用 Master 使用的语言写。它不随预设走，任何预设的会话都收得到；人格里那句固定中文留在原处，是这一段缺席时的兜底。
 - **可随时卸载**。移除 bundle 行并重启后，原生渲染与默认预设原样恢复。
 
 ## 安装
