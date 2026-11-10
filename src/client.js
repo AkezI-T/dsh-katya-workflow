@@ -8,7 +8,8 @@
  *      the row is collapsed. A settling call folds its children automatically.
  *   2. `settings.general.item` id `transcript-view` — the official work-details
  *      row with a fifth choice, "Step summary", which pins the official mode to
- *      `verbose` so no Turn-level folding hides the steps.
+ *      `verbose` while completion folding is off. The final-reply preference
+ *      uses the host's `detailed` completion-folding policy instead.
  *
  * The fifth choice is stored in browser-local storage; every other value is
  * written to the `ui-chat` settings namespace through the documented
@@ -28,6 +29,7 @@ window.__ModuleLoader__.load({
     var CHAT_NS = 'ui-chat'
     var STEPS = 'steps'
     var STORAGE_KEY = 'katya-steps.mode'
+    var FINAL_ONLY_KEY = 'katya-final-only.previous'
     var RETURN_KEY = 'katya-return.mode'
     var RETURN_DURATION_KEY = 'katya-return.duration'
     var RETURN_DURATIONS = [400, 700, 1000, 1400, 2000]
@@ -61,11 +63,15 @@ window.__ModuleLoader__.load({
       'cat.web': '网页',
       'cat.subagent': '子代理',
       'cat.tool': '工具',
-      'return.title': '回复完成后回到提问',
-      'return.description': '回答结束时，把这一轮的提问带回视野',
+      'final.title': '完成后仅显示最终回复',
+      'final.description': '回答结束后收起工作步骤与中间回复；关闭后恢复此前的显示设置',
+      'final.error': '显示设置保存失败，请重试',
+      'final.managed': '收起规则由「完成后仅显示最终回复」控制',
+      'return.title': '回答结束后自动滚动到本轮问题',
+      'return.description': '过程收起并稳定后，将本轮最后一条问题滚动到对话区顶部',
       'return.on': '开',
       'return.off': '关',
-      'return.duration': '回跳滑动时长',
+      'return.duration': '自动滚动时长',
       'return.durationDescription': '时间越长，滑动越慢；默认 1 秒',
       'return.seconds': '秒',
       'page.title': 'Katya'
@@ -99,11 +105,15 @@ window.__ModuleLoader__.load({
       'cat.web': 'web',
       'cat.subagent': 'subagent',
       'cat.tool': 'tool',
-      'return.title': 'Return to the question when a reply ends',
-      'return.description': 'Bring this turn’s question back into view once the answer finishes',
+      'final.title': 'Show only the final reply on completion',
+      'final.description': 'Collapse work details and intermediate replies when the answer ends; turning this off restores the previous display settings',
+      'final.error': 'Could not save display settings. Please try again.',
+      'final.managed': 'Collapse rules are controlled by “Show only the final reply on completion”',
+      'return.title': 'Automatically scroll to this turn’s question after the answer ends',
+      'return.description': 'Once process details finish collapsing, align this turn’s last question with the top of the conversation',
       'return.on': 'On',
       'return.off': 'Off',
-      'return.duration': 'Return scroll duration',
+      'return.duration': 'Automatic scroll duration',
       'return.durationDescription': 'Longer durations scroll more slowly; default: 1 second',
       'return.seconds': 's',
       'page.title': 'Katya'
@@ -440,12 +450,40 @@ window.__ModuleLoader__.load({
       durationListeners.forEach(function (listener) { listener() })
     }
 
+    function readFinalOnlyPrevious() {
+      try {
+        var value = JSON.parse(window.localStorage.getItem(FINAL_ONLY_KEY))
+        if (value && Array.isArray(value) && value.length === 3 && value.every(function (op, index) {
+          return op && (op.op === 'set' || op.op === 'unset') && Array.isArray(op.path) &&
+            op.path.length === 1 && op.path[0] === ['transcriptView', 'collapseTiming', 'foldedReplies'][index]
+        })) return value
+      } catch (error) {
+        // A missing or invalid saved preference leaves the optional mode off.
+      }
+      return null
+    }
+
+    var finalOnlySnapshot = { previous: readFinalOnlyPrevious(), busy: false, error: false }
+    var finalOnlyListeners = new Set()
+    var finalOnly = {
+      getSnapshot: function () { return finalOnlySnapshot },
+      subscribe: function (listener) {
+        finalOnlyListeners.add(listener)
+        return function () { finalOnlyListeners.delete(listener) }
+      }
+    }
+    function publishFinalOnly(previous, busy, error) {
+      finalOnlySnapshot = { previous: previous, busy: busy, error: error }
+      finalOnlyListeners.forEach(function (listener) { listener() })
+    }
+
     function installReturnToPrompt() {
       if (typeof window === 'undefined' || typeof MutationObserver !== 'function') return undefined
 
       var watching = false
       var activeBox = null
       var activePrompt = null
+      var activeTail = false
       var probeFrame = null
       var sawRemoval = false
       var cancelReturn = null
@@ -493,10 +531,11 @@ window.__ModuleLoader__.load({
         return best
       }
 
-      function returnToPrompt(box, prompt) {
+      function returnToPrompt(box, prompt, followedBeforeFold) {
         cancel()
         if (returnValue !== 'on' || box === null || prompt === null) return
-        if (box.scrollHeight - box.scrollTop - box.clientHeight > TAIL_SLACK) return
+        var folding = box.querySelector('[data-input-fold], [data-chat-motion="collapse"]') !== null
+        if (!(folding && followedBeforeFold) && box.scrollHeight - box.scrollTop - box.clientHeight > TAIL_SLACK) return
 
         var timer = null
         var frameId = null
@@ -578,9 +617,12 @@ window.__ModuleLoader__.load({
           }
           var top = box.scrollTop
           var height = box.scrollHeight
+          var promptTop = prompt.getBoundingClientRect().top + top
           timer = setTimeout(function () {
             waited += QUIET_STEP
-            quiet = box.scrollTop === top && box.scrollHeight === height ? quiet + QUIET_STEP : 0
+            var folding = box.querySelector('[data-input-fold], [data-chat-motion="collapse"]') !== null
+            quiet = !folding && box.scrollTop === top && box.scrollHeight === height &&
+              prompt.getBoundingClientRect().top + box.scrollTop === promptTop ? quiet + QUIET_STEP : 0
             if (quiet >= QUIET_DURATION) land()
             else if (waited >= QUIET_CAP) stop()
             else settle()
@@ -597,16 +639,19 @@ window.__ModuleLoader__.load({
           cancel()
           activeBox = box
           activePrompt = box === null ? null : lastPrompt(box)
+          activeTail = box !== null && box.scrollHeight - box.scrollTop - box.clientHeight <= TAIL_SLACK
           watching = true
           return
         }
         if (!watching && !removed) return
         var prompt = box === null ? null : lastPrompt(box)
         var sameTurn = !watching || box === activeBox && prompt === activePrompt
+        var followedBeforeFold = watching && activeTail
         watching = false
         activeBox = null
         activePrompt = null
-        if (sameTurn) returnToPrompt(box, prompt)
+        activeTail = false
+        if (sameTurn) returnToPrompt(box, prompt, followedBeforeFold)
         else cancel()
       }
 
@@ -747,6 +792,7 @@ window.__ModuleLoader__.load({
         className: 'ks-selector',
         'aria-haspopup': 'menu',
         'aria-expanded': open,
+        disabled: props.disabled,
         onClick: function () { setOpen(!open) }
       }, props.selectedLabel, h(primitives.IconChevronDownOutlineRegular, { size: 12 }))
 
@@ -763,7 +809,7 @@ window.__ModuleLoader__.load({
           onSelect: function (id) {
             setOpen(false)
             if (buttonRef.current) buttonRef.current.focus({ preventScroll: true })
-            props.onSelect(id)
+            if (!props.disabled) props.onSelect(id)
           },
           align: 'end',
           portal: true,
@@ -776,6 +822,8 @@ window.__ModuleLoader__.load({
       var t = props.t
       var useForm = props.useForm
       var flagValue = props.useStepMode(function (value) { return value })
+      var finalState = props.useFinalOnly(function (value) { return value })
+      var managed = finalState.previous !== null
       var view = useForm(function (snapshot) { return snapshot.value ? snapshot.value.transcriptView : undefined })
       var timing = useForm(function (snapshot) { return snapshot.value ? snapshot.value.collapseTiming : undefined })
       var replies = useForm(function (snapshot) { return snapshot.value ? snapshot.value.foldedReplies : undefined })
@@ -799,13 +847,14 @@ window.__ModuleLoader__.load({
       return h(React.Fragment, null,
         h(Preference, {
           title: t('mode.title'),
-          description: t('mode.description'),
+          description: t(managed ? 'final.managed' : 'mode.description'),
+          disabled: finalState.busy,
           value: mode,
           selectedLabel: t('mode.' + mode),
           options: modeOptions,
           onSelect: function (id) { props.chooseStepMode(id) }
         }),
-        timing === undefined ? null : h(Preference, {
+        timing === undefined || managed ? null : h(Preference, {
           title: t('collapse.title'),
           description: t('collapse.description'),
           value: timingValue,
@@ -813,7 +862,7 @@ window.__ModuleLoader__.load({
           options: timingOptions,
           onSelect: function (id) { props.setCollapseTiming(id) }
         }),
-        mode !== 'verbose' && replies !== undefined ? h(Preference, {
+        !managed && mode !== 'verbose' && replies !== undefined ? h(Preference, {
           title: t('replies.title'),
           description: t('replies.description'),
           value: replyValue,
@@ -826,10 +875,26 @@ window.__ModuleLoader__.load({
 
     function KatyaSection(props) {
       var t = props.translate
+      var finalState = props.useFinalOnly(function (value) { return value })
+      var finalOn = finalState.previous !== null
+      var writable = props.useForm(function (snapshot) { return snapshot.writable })
       var returnOn = props.useReturnMode(function (value) { return value === 'on' })
       var duration = props.useReturnDuration(function (value) { return value })
       function durationLabel(value) { return String(value / 1000) + ' ' + t('return.seconds') }
       return h('div', { className: 'ks-section' },
+        h(Preference, {
+          title: t('final.title'),
+          description: t('final.description'),
+          value: finalOn ? 'on' : 'off',
+          selectedLabel: t(finalOn ? 'return.on' : 'return.off'),
+          disabled: finalState.busy || !writable,
+          options: [
+            { id: 'on', label: t('return.on') },
+            { id: 'off', label: t('return.off') }
+          ],
+          onSelect: function (id) { void props.setFinalOnly(id) }
+        }),
+        finalState.error ? h('div', { className: 'ks-pref-desc', role: 'alert' }, t('final.error')) : null,
         h(Preference, {
           title: t('return.title'),
           description: t('return.description'),
@@ -887,7 +952,51 @@ window.__ModuleLoader__.load({
 
       var form = ctx.configForms.get(CHAT_NS)
 
-      function chooseStepMode(id) {
+      async function setFinalOnly(id) {
+        if (finalOnlySnapshot.busy) return false
+        var previous = finalOnlySnapshot.previous
+        var enabled = id === 'on'
+        if (enabled === (previous !== null)) return true
+        var snapshot = form.getSnapshot()
+        if (!snapshot.writable || !snapshot.value) return false
+        var saved = previous
+        if (enabled) {
+          var user = snapshot.user || {}
+          saved = ['transcriptView', 'collapseTiming', 'foldedReplies'].map(function (field) {
+            return Object.prototype.hasOwnProperty.call(user, field)
+              ? { op: 'set', path: [field], value: user[field] }
+              : { op: 'unset', path: [field] }
+          })
+        }
+        publishFinalOnly(previous, true, false)
+        try {
+          var ops = enabled ? [
+            { op: 'set', path: ['transcriptView'], value: 'detailed' },
+            { op: 'set', path: ['collapseTiming'], value: 'completion' },
+            { op: 'set', path: ['foldedReplies'], value: 'final' }
+          ] : saved
+          if (!await form.mutate(ops)) {
+            publishFinalOnly(previous, false, true)
+            return false
+          }
+          var next = enabled ? saved : null
+          try {
+            if (next === null) window.localStorage.removeItem(FINAL_ONLY_KEY)
+            else window.localStorage.setItem(FINAL_ONLY_KEY, JSON.stringify(next))
+          } catch (error) {
+            // The saved display settings remain available for this page.
+          }
+          publishFinalOnly(next, false, false)
+          return true
+        } catch (error) {
+          publishFinalOnly(previous, false, true)
+          return false
+        }
+      }
+
+      async function chooseStepMode(id) {
+        if (finalOnlySnapshot.busy) return
+        if (finalOnlySnapshot.previous !== null && !await setFinalOnly('off')) return
         if (id === STEPS) {
           setFlag(STEPS)
           void form.set('transcriptView', 'verbose')
@@ -908,7 +1017,7 @@ window.__ModuleLoader__.load({
               locale: NS,
               inject: function () {
                 return {
-                  hooks: { stepMode: stepMode, form: form },
+                  hooks: { stepMode: stepMode, form: form, finalOnly: finalOnly },
                   chooseStepMode: chooseStepMode,
                   setCollapseTiming: function (value) { void form.set('collapseTiming', value) },
                   setFoldedReplies: function (value) { void form.set('foldedReplies', value) }
@@ -920,22 +1029,25 @@ window.__ModuleLoader__.load({
       }, 'katya-steps: settings row')
 
       ctx.effect(function () {
-        return ctx.slots.inject('settings.section', function () {
-          return ctx.slots.register({
-            name: 'settings.section',
-            id: 'katya',
-            order: 90,
-            label: function () { return translate('page.title') },
-            locale: NS,
-            inject: function () {
-              return {
-                hooks: { returnMode: returnMode, returnDuration: returnDuration },
-                translate: translate,
-                setReturnMode: setReturnMode,
-                setReturnDuration: setReturnDuration
+        return ctx.configForms.whileServed([CHAT_NS], function () {
+          return ctx.slots.inject('settings.section', function () {
+            return ctx.slots.register({
+              name: 'settings.section',
+              id: 'katya',
+              order: 90,
+              label: function () { return translate('page.title') },
+              locale: NS,
+              inject: function () {
+                return {
+                  hooks: { returnMode: returnMode, returnDuration: returnDuration, finalOnly: finalOnly, form: form },
+                  setFinalOnly: setFinalOnly,
+                  translate: translate,
+                  setReturnMode: setReturnMode,
+                  setReturnDuration: setReturnDuration
+                }
               }
-            }
-          }, KatyaSection)
+            }, KatyaSection)
+          })
         })
       }, 'katya-steps: settings page')
 
