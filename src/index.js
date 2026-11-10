@@ -13,7 +13,7 @@
  */
 
 /** Loader identity used by diagnostics and by the browser-half scan. */
-export const name = 'katya-steps'
+export const name = 'katya'
 
 /** The prompt registry this row contributes to. */
 export const inject = ['systemPrompt']

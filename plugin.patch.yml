@@ -1,0 +1,14 @@
+# Katya — the package's single Loader row.
+#
+# The row is what the Loader mounts and what the plugin panel lists. Client
+# bundles are discovered by scanning enabled entries for a package declaring
+# `dsh.client`, so this row is also what brings the browser half into the start
+# graph. The row carries the whole package: the two presets live in their own
+# patches, while the step summary, the return-to-question behaviour and the
+# settings page all ship inside this package's one browser bundle.
+#
+# Removing this line (and restarting) restores the official chat rendering; no
+# official file is touched either way.
+- insert:
+    - id: katya
+      name: '@local/dsh-katya-workflow'
