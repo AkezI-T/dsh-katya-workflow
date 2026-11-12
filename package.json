@@ -1,6 +1,6 @@
 {
   "name": "@local/dsh-katya-workflow",
-  "version": "0.1.0",
+  "version": "1.1.1",
   "private": true,
   "type": "module",
   "description": "Katya 预设组合：人格随包内 persona.md 加载，提供工作流编排与创造模式两个预设，并附带步骤摘要与回复回跳两个聊天区组件。",

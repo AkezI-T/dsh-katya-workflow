@@ -7,7 +7,7 @@
 ## 安装与开始使用
 
 1. 在 DSH 的插件管理中添加仓库地址：<https://github.com/AkezI-T/dsh-katya-workflow>，也可以选择本地项目目录。
-2. 安装完成后，按 DSH 提示应用变更；预设变更需要重启 Host。
+2. 安装完成后，按 DSH 提示应用变更；新建会话使用新的预设修订，已有会话继续使用启动时的修订。
 3. 新建会话时选择 **Katya** 或 **Katya-Creator**。
 4. 在 **设置 → 通用 → 工作步骤展示** 中选择 **步骤摘要**，启用工具调用的摘要显示。
 5. 在 **设置 → Katya** 中调整过程折叠、自动滚动及滚动时长。
@@ -83,7 +83,7 @@
 
 PTC 将工具目录呈现为 `run_code` 与生成的 SDK，可在一段程序中组织调用、并行和错误处理。预设需要宿主提供 PTC 运行环境。
 
-Agent Teams 的服务与工具由宿主 profile 提供；本包的协作约定与该环境配合使用。持久终端 `terminal_*` 同样来自另外挂载的终端插件。
+普通协作使用宿主提供的 `subagent` / `subagent_fork`、`list_agents`、`send_message` 和 `wait_agent`。Agent Teams 任务板由宿主提供，在根会话菜单中按会话启用。持久终端 `terminal_*` 来自另外挂载的终端插件。
 
 Katya-Creator 的技能从当前 DSH 安装中解析，随安装版本提供。插件管理能力依赖 profile 上下文；该上下文不存在时，对应工具停用。
 
@@ -128,6 +128,24 @@ node tools/check-behaviour.mjs
 | [构建脚本](<tools/build.mjs>) | 生成运行产物 |
 | [注册检查](<tools/check-bundle.mjs>) | 检查客户端模块注册 |
 | [行为检查](<tools/check-behaviour.mjs>) | 本地模拟行为检查 |
+
+## DSH 0.2.2-rc.2 适配
+
+本包 1.1.1 以当前官方 PTC 预设为基础；Katya-Creator 在同一基础上加入官方 Creator 的运行时探查、创作技能和插件管理入口。
+
+| 项目 | 1.1.1 行为 |
+| --- | --- |
+| PTC | 直接挂载 `@deepseek-ai/dsh-tool-executor-ptc`，替换已弃用的 presentation 兼容层 |
+| 子代理模型 | 使用 `modelSelection` / `modelDiscovery`；可查询模型，默认路由由宿主决定 |
+| 子代理中断 | 与官方一致设置 `interrupt: false` |
+| Ralph | 由官方可选 `@deepseek-ai/dsh-experimental-ralph-bundle` 提供，普通长期任务使用 goal 工具 |
+| Office | 两个预设均挂载 `tool-office`；加载 Office 技能后提供渲染、转换与重算工具 |
+| Team | 使用标准子代理工具和名称通信；共享任务板按根会话启用 |
+| Katya 定制 | 共享人格、Windows Git Bash、步骤摘要、完成后折叠和回复回跳 |
+
+预设沿用官方 PTC 的通用 workflow 停用设置；Ralph bundle 独立提供自己的工作流引擎。Creator 的技能目录按官方表达式从当前安装解析。`applyPatch: false` 与官方保持一致。
+
+适配依据为当前安装附带的迁移指南：工具执行器拆分、按会话选择 Team、Team 使用标准 subagent、按名称寻址、Team 投影、收件箱等待、子代理中断默认和 Office 操作工具。其他指南不涉及本包使用的接口，未引入对应改动。
 
 ## 兼容边界
 
