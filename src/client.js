@@ -74,6 +74,36 @@ window.__ModuleLoader__.load({
       'return.duration': '自动滚动时长',
       'return.durationDescription': '时间越长，滑动越慢；默认 1 秒',
       'return.seconds': '秒',
+      'member.title': '女仆团模型',
+      'member.scope': '仅对 LeaderPro 及其后续创建的新成员生效，覆盖整棵女仆团；已有成员保持创建时的设置。',
+      'member.provider': '供应商',
+      'member.model': '模型',
+      'member.effort': '推理强度',
+      'member.tokens': '最大输出 Token',
+      'member.default': '默认（继承模型设置）',
+      'member.routeDefault': '未指定（创建成员前需选择）',
+      'member.tokensHelp': '留空使用模型默认值；自定义值必须为正整数。',
+      'member.noEffort': '此模型未提供可选推理强度。',
+      'member.loading': '正在加载设置与模型…',
+      'member.catalogLoading': '正在加载模型…',
+      'member.emptyCatalog': '当前没有可选模型，请先在模型设置中配置供应商。',
+      'member.catalogError': '模型目录加载失败，已保存值和草稿已保留。',
+      'member.unavailable': '已保存的供应商、模型或推理强度当前不可用，请重新选择或恢复默认。',
+      'member.incomplete': '请选择完整的供应商和模型，或将两项均恢复默认。',
+      'member.invalidTokens': '最大输出 Token 必须为正整数，或留空使用默认值。',
+      'member.parametersNeedModel': '自定义参数需要先选择供应商和模型。',
+      'member.configError': '设置加载失败，请重试。',
+      'member.configUnavailable': '女仆团模型设置当前不可用。',
+      'member.readOnly': '当前设置只读。',
+      'member.conflict': '设置已在其他位置更新；草稿已保留，请恢复已保存值后重新编辑。',
+      'member.save': '保存女仆团模型',
+      'member.saving': '正在保存…',
+      'member.saved': '女仆团模型设置已保存。',
+      'member.saveError': '设置保存失败，草稿已保留。请恢复已保存值后重试。',
+      'member.reload': '重新加载模型',
+      'member.retryConfig': '重试加载设置',
+      'member.reset': '恢复已保存值',
+      'member.missing': '当前不可用：',
       'page.title': 'Katya'
     }
 
@@ -116,6 +146,36 @@ window.__ModuleLoader__.load({
       'return.duration': 'Automatic scroll duration',
       'return.durationDescription': 'Longer durations scroll more slowly; default: 1 second',
       'return.seconds': 's',
+      'member.title': 'Maid team model',
+      'member.scope': 'Applies only to LeaderPro and newly created members across its whole team tree. Existing members keep the settings used at creation.',
+      'member.provider': 'Provider',
+      'member.model': 'Model',
+      'member.effort': 'Reasoning effort',
+      'member.tokens': 'Maximum output tokens',
+      'member.default': 'Default (use model settings)',
+      'member.routeDefault': 'Not configured (choose before creating members)',
+      'member.tokensHelp': 'Leave blank for the model default, or enter a positive integer.',
+      'member.noEffort': 'This model advertises no selectable reasoning efforts.',
+      'member.loading': 'Loading settings and models…',
+      'member.catalogLoading': 'Loading models…',
+      'member.emptyCatalog': 'No models are available. Configure a provider in Models settings first.',
+      'member.catalogError': 'Could not load the model catalog. Saved values and the draft have been preserved.',
+      'member.unavailable': 'The saved provider, model, or reasoning effort is currently unavailable. Choose an available value or restore defaults.',
+      'member.incomplete': 'Choose both a provider and a model, or restore both to defaults.',
+      'member.invalidTokens': 'Maximum output tokens must be a positive integer, or blank for the default.',
+      'member.parametersNeedModel': 'Choose a provider and model before customizing parameters.',
+      'member.configError': 'Could not load settings. Please retry.',
+      'member.configUnavailable': 'Maid team model settings are currently unavailable.',
+      'member.readOnly': 'These settings are read-only.',
+      'member.conflict': 'Settings changed elsewhere. The draft has been preserved; restore saved values before editing again.',
+      'member.save': 'Save maid team model',
+      'member.saving': 'Saving…',
+      'member.saved': 'Maid team model settings saved.',
+      'member.saveError': 'Could not save settings. The draft has been preserved. Restore saved values and retry.',
+      'member.reload': 'Reload models',
+      'member.retryConfig': 'Retry loading settings',
+      'member.reset': 'Restore saved values',
+      'member.missing': 'Currently unavailable: ',
       'page.title': 'Katya'
     }
 
@@ -145,7 +205,19 @@ window.__ModuleLoader__.load({
       '.ks-pref-title { font-size: 13px; color: var(--dsw-alias-label-primary); }',
       '.ks-pref-desc { margin-top: 2px; font-size: 12px; color: var(--dsw-alias-label-tertiary); }',
       '.ks-selector { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border: 1px solid var(--dsw-alias-line-secondary, rgba(127, 127, 127, .24)); border-radius: 8px; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; font-size: 12px; cursor: pointer; }'
-    ].join('\n')
+    ].concat([
+      '.ks-member { margin-top: 20px; padding: 16px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; color: var(--dsw-alias-label-primary); }',
+      '.ks-member h3 { margin: 0 0 8px; font: inherit; font-weight: 600; }',
+      '.ks-member-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 16px; }',
+      '.ks-member-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }',
+      '.ks-member select, .ks-member input, .ks-member button { box-sizing: border-box; min-width: 0; padding: 6px 8px; border: 1px solid var(--dsw-alias-border-l1); border-radius: 6px; background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-primary); font: inherit; }',
+      '.ks-member select, .ks-member input { width: 100%; }',
+      '.ks-member option { background: var(--dsw-alias-bg-layer-2); color: var(--dsw-alias-label-primary); }',
+      '.ks-member button { cursor: pointer; }',
+      '.ks-member button:disabled { cursor: default; opacity: .55; }',
+      '.ks-member-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }',
+      '.ks-member-error { color: var(--dsw-alias-state-error-primary); margin-top: 8px; font-size: 12px; }'
+    ]).join('\n')
 
     function trimTo(text, limit) {
       var value = String(text == null ? '' : text).trim()
@@ -873,6 +945,169 @@ window.__ModuleLoader__.load({
       )
     }
 
+    function memberDraft(value) {
+      value = value || {}
+      return {
+        memberProvider: value.memberProvider || '',
+        memberModel: value.memberModel || '',
+        memberReasoningEffort: value.memberReasoningEffort || '',
+        memberMaxTokens: value.memberMaxTokens ? String(value.memberMaxTokens) : ''
+      }
+    }
+
+    function MemberModelSettings(props) {
+      var t = props.translate
+      var snapshot = props.useMemberForm(function (value) { return value })
+      var mirror = props.useSettingsMirror(function (value) { return value })
+      var editorPair = React.useState({ draft: null, revision: undefined, dirty: false })
+      var editor = editorPair[0]
+      var setEditor = editorPair[1]
+      var catalogPair = React.useState({ value: null, busy: true, error: '' })
+      var catalog = catalogPair[0]
+      var setCatalog = catalogPair[1]
+      var retryPair = React.useState(0)
+      var savePair = React.useState({ busy: false, status: '' })
+      var saving = savePair[0]
+      var setSaving = savePair[1]
+      var saveLock = React.useRef(false)
+      var mounted = React.useRef(false)
+      React.useEffect(function () {
+        mounted.current = true
+        return function () { mounted.current = false }
+      }, [])
+      React.useEffect(function () {
+        if (!editor.dirty && snapshot.value) {
+          setEditor({ draft: memberDraft(snapshot.value), revision: snapshot.revision, dirty: false })
+        }
+      }, [snapshot.value, snapshot.revision, editor.dirty])
+      React.useEffect(function () {
+        var active = true
+        setCatalog(function (previous) { return { value: previous.value, busy: true, error: '' } })
+        props.loadMemberCatalog().then(function (value) {
+          if (active) setCatalog({ value: value, busy: false, error: '' })
+        }, function (error) {
+          if (active) setCatalog(function (previous) {
+            return { value: previous.value, busy: false, error: error instanceof Error ? error.message : String(error) }
+          })
+        })
+        return function () { active = false }
+      }, [retryPair[0], props.loadMemberCatalog])
+
+      var draft = editor.draft || memberDraft(snapshot.value)
+      var groups = catalog.value ? catalog.value.groups : []
+      var failures = catalog.value ? catalog.value.failures : []
+      var provider = groups.find(function (group) { return group.id === draft.memberProvider })
+      var models = provider ? provider.models : []
+      var model = models.find(function (item) { return item.id === draft.memberModel })
+      var efforts = model && model.reasoning ? model.reasoning.efforts : []
+      var effort = efforts.find(function (item) { return item.id === draft.memberReasoningEffort })
+      var tokens = draft.memberMaxTokens.trim()
+      var validTokens = tokens === '' || (/^[0-9]+$/.test(tokens) && Number.isSafeInteger(Number(tokens)) && Number(tokens) > 0)
+      var conflict = editor.dirty && editor.revision !== snapshot.revision
+      var validation = ''
+      if (!validTokens) validation = 'member.invalidTokens'
+      else if (Boolean(draft.memberProvider) !== Boolean(draft.memberModel)) validation = 'member.incomplete'
+      else if (!draft.memberProvider && (draft.memberReasoningEffort || tokens !== '')) validation = 'member.parametersNeedModel'
+      else if (catalog.value && (draft.memberProvider && (!provider || !model) || draft.memberReasoningEffort && !effort)) validation = 'member.unavailable'
+      var disabled = saving.busy || snapshot.status !== 'ready' || !snapshot.writable || !snapshot.value
+      var canSave = !disabled && editor.dirty && !validation && !conflict && !catalog.busy && !catalog.error && catalog.value
+
+      function change(patch) {
+        if (disabled) return
+        setEditor({ draft: Object.assign({}, draft, patch), revision: editor.dirty ? editor.revision : snapshot.revision, dirty: true })
+        setSaving({ busy: false, status: '' })
+      }
+      function restore() {
+        setEditor({ draft: memberDraft(snapshot.value), revision: snapshot.revision, dirty: false })
+        setSaving({ busy: false, status: '' })
+      }
+      async function save() {
+        if (!canSave || saveLock.current) return
+        saveLock.current = true
+        setSaving({ busy: true, status: '' })
+        try {
+          var accepted = await props.memberForm.mutate([
+            { op: 'set', path: ['memberProvider'], value: draft.memberProvider },
+            { op: 'set', path: ['memberModel'], value: draft.memberModel },
+            { op: 'set', path: ['memberReasoningEffort'], value: draft.memberReasoningEffort },
+            { op: 'set', path: ['memberMaxTokens'], value: tokens === '' ? 0 : Number(tokens) }
+          ], editor.revision)
+          if (!mounted.current) return
+          if (accepted) {
+            var saved = props.memberForm.getSnapshot()
+            setEditor({ draft: memberDraft(saved.value), revision: saved.revision, dirty: false })
+          }
+          setSaving({ busy: false, status: accepted ? 'member.saved' : 'member.saveError' })
+        } catch (error) {
+          if (mounted.current) setSaving({ busy: false, status: 'member.saveError' })
+        } finally {
+          saveLock.current = false
+        }
+      }
+      function field(label, control, help) {
+        return h('label', { className: 'ks-member-field' }, h('span', null, t(label)), control,
+          help ? h('span', { className: 'ks-pref-desc' }, t(help)) : null)
+      }
+      function missing(value) {
+        return h('option', { key: 'missing:' + value, value: value, disabled: true }, t('member.missing') + value)
+      }
+      var errors = []
+      if (mirror.error) errors.push(t('member.configError') + ' ' + mirror.error)
+      if (snapshot.status === 'unavailable') errors.push(t('member.configUnavailable'))
+      if (catalog.error) errors.push(t('member.catalogError') + ' ' + catalog.error)
+      failures.forEach(function (failure) { errors.push(failure.name + ': ' + failure.message) })
+      if (validation) errors.push(t(validation))
+      if (conflict) errors.push(t('member.conflict'))
+      if (snapshot.status === 'ready' && !snapshot.writable) errors.push(t('member.readOnly'))
+      if (saving.status === 'member.saveError') errors.push(t(saving.status))
+      return h('section', { className: 'ks-member', 'aria-busy': saving.busy || catalog.busy },
+        h('h3', null, t('member.title')),
+        h('div', { className: 'ks-pref-desc' }, t('member.scope')),
+        snapshot.status === 'loading' && !mirror.error ? h('div', { role: 'status', className: 'ks-pref-desc' }, t('member.loading')) : null,
+        catalog.busy ? h('div', { role: 'status', className: 'ks-pref-desc' }, t('member.catalogLoading')) : null,
+        catalog.value && !catalog.busy && groups.length === 0 ? h('div', { role: 'status', className: 'ks-pref-desc' }, t('member.emptyCatalog')) : null,
+        h('div', { className: 'ks-member-fields' },
+          field('member.provider', h('select', {
+            value: draft.memberProvider, disabled: disabled || catalog.busy,
+            onChange: function (event) {
+              var value = event.target.value
+              change({ memberProvider: value, memberModel: '', memberReasoningEffort: '', memberMaxTokens: value ? draft.memberMaxTokens : '' })
+            }
+          }, h('option', { value: '' }, t('member.routeDefault')),
+          draft.memberProvider && !provider ? missing(draft.memberProvider) : null,
+          groups.map(function (group) { return h('option', { key: group.id, value: group.id }, group.name) }))),
+          field('member.model', h('select', {
+            value: draft.memberModel, disabled: disabled || catalog.busy || !provider,
+            onChange: function (event) { change({ memberModel: event.target.value, memberReasoningEffort: '' }) }
+          }, h('option', { value: '' }, t('member.routeDefault')),
+          draft.memberModel && !model ? missing(draft.memberModel) : null,
+          models.map(function (item) { return h('option', { key: item.id, value: item.id }, item.name) }))),
+          field('member.effort', h('select', {
+            value: draft.memberReasoningEffort, disabled: disabled || catalog.busy || !model,
+            onChange: function (event) { change({ memberReasoningEffort: event.target.value }) }
+          }, h('option', { value: '' }, t('member.default')),
+          draft.memberReasoningEffort && !effort ? missing(draft.memberReasoningEffort) : null,
+          efforts.map(function (item) { return h('option', { key: item.id, value: item.id, title: item.description }, item.name) })),
+          model && efforts.length === 0 ? 'member.noEffort' : null),
+          field('member.tokens', h('input', {
+            type: 'text', inputMode: 'numeric', value: draft.memberMaxTokens, placeholder: t('member.default'),
+            disabled: disabled, 'aria-invalid': !validTokens,
+            onChange: function (event) { change({ memberMaxTokens: event.target.value }) }
+          }), 'member.tokensHelp')
+        ),
+        errors.length ? h('div', { className: 'ks-member-error', role: 'alert' }, errors.map(function (error, index) {
+          return h('div', { key: index }, error)
+        })) : null,
+        h('div', { className: 'ks-member-actions' },
+          h('button', { type: 'button', disabled: !canSave, onClick: function () { void save() } }, t(saving.busy ? 'member.saving' : 'member.save')),
+          h('button', { type: 'button', disabled: saving.busy || !snapshot.value, onClick: restore }, t('member.reset')),
+          h('button', { type: 'button', disabled: catalog.busy || saving.busy, onClick: function () { retryPair[1](function (value) { return value + 1 }) } }, t('member.reload')),
+          mirror.error && !mirror.view ? h('button', { type: 'button', disabled: saving.busy, onClick: function () { void props.ensureMemberSettings() } }, t('member.retryConfig')) : null
+        ),
+        saving.status === 'member.saved' ? h('div', { role: 'status', className: 'ks-pref-desc' }, t('member.saved')) : null
+      )
+    }
+
     function KatyaSection(props) {
       var t = props.translate
       var finalState = props.useFinalOnly(function (value) { return value })
@@ -915,11 +1150,12 @@ window.__ModuleLoader__.load({
             return { id: String(value), label: durationLabel(value) }
           }),
           onSelect: function (id) { props.setReturnDuration(id) }
-        })
+        }),
+        h(MemberModelSettings, props)
       )
     }
 
-    var inject = ['slots', 'locale', 'configForms']
+    var inject = ['slots', 'locale', 'configForms', 'remote', 'remote.session']
 
     function apply(ctx) {
       ctx.effect(function () {
@@ -951,6 +1187,16 @@ window.__ModuleLoader__.load({
       }, 'katya-steps: run_code row')
 
       var form = ctx.configForms.get(CHAT_NS)
+      var memberForm = ctx.configForms.get('katya')
+      var settingsMirror = ctx.configForms.describe()
+      async function loadMemberCatalog() {
+        var response = await ctx.remote.session.modelCatalog()
+        if (!response.ok) throw new Error(response.error.message)
+        return response.value
+      }
+      async function ensureMemberSettings() {
+        await settingsMirror.ensure()
+      }
 
       async function setFinalOnly(id) {
         if (finalOnlySnapshot.busy) return false
@@ -1039,7 +1285,10 @@ window.__ModuleLoader__.load({
               locale: NS,
               inject: function () {
                 return {
-                  hooks: { returnMode: returnMode, returnDuration: returnDuration, finalOnly: finalOnly, form: form },
+                  hooks: { returnMode: returnMode, returnDuration: returnDuration, finalOnly: finalOnly, form: form, memberForm: memberForm, settingsMirror: settingsMirror },
+                  memberForm: memberForm,
+                  loadMemberCatalog: loadMemberCatalog,
+                  ensureMemberSettings: ensureMemberSettings,
                   setFinalOnly: setFinalOnly,
                   translate: translate,
                   setReturnMode: setReturnMode,

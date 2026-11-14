@@ -9,6 +9,7 @@ const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const halves = [
   ['src/index.js', 'lib/index.js'],
   ['src/client.js', 'lib/client.js'],
+  ['src/leaderpro.js', 'lib/leaderpro.js'],
 ]
 
 mkdirSync(join(root, 'lib'), { recursive: true })

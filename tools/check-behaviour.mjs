@@ -129,7 +129,11 @@ function harness(options = {}) {
       inject: (name, cb) => cb(),
       register: (opts, component) => { registered.push({ opts, component }); return () => {} },
     },
-    configForms: { get: () => ({ set: () => {} }), whileServed: (name, cb) => cb() },
+    configForms: {
+      get: () => ({ set: () => {} }),
+      describe: () => ({ ensure: async () => {}, getSnapshot: () => ({ status: 'ready' }), subscribe: () => () => {} }),
+      whileServed: (name, cb) => cb(),
+    },
   })
 
   function complete() {
@@ -184,6 +188,8 @@ function sectionOf(h) {
     useReturnDuration: (select) => select(injected.hooks.returnDuration.getSnapshot()),
     useFinalOnly: (select) => select(injected.hooks.finalOnly.getSnapshot()),
     useForm: (select) => select({ writable: true }),
+    useMemberForm: (select) => select({ status: 'ready', writable: true, value: {}, revision: 1 }),
+    useSettingsMirror: (select) => select({ status: 'ready' }),
     setFinalOnly: () => {},
     setReturnMode: injected.setReturnMode,
     setReturnDuration: injected.setReturnDuration,

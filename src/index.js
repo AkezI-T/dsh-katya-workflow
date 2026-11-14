@@ -13,7 +13,40 @@
  */
 
 /** Loader identity used by diagnostics and by the browser-half scan. */
+import { Service } from '@deepseek-ai/cordis'
+import z from '@deepseek-ai/schemastery'
+
 export const name = 'katya'
+
+/** Host-persisted user policy; no agent tool can edit these fields. */
+export const Config = z.object({
+  memberProvider: z.string().default('').volatile(),
+  memberModel: z.string().default('').volatile(),
+  memberReasoningEffort: z.string().default('').volatile(),
+  memberMaxTokens: z.number().step(1).min(0).max(Number.MAX_SAFE_INTEGER).default(0).volatile(),
+})
+
+class KatyaMemberModels extends Service {
+  constructor(ctx, config) {
+    super(ctx, 'katyaMemberModels')
+    this.config = config
+  }
+
+  async options(signal) {
+    const provider = this.config.memberProvider.get().trim()
+    const model = this.config.memberModel.get().trim()
+    const reasoningEffort = this.config.memberReasoningEffort.get().trim()
+    const maxTokens = this.config.memberMaxTokens.get()
+    if (!provider || !model) throw new Error('LeaderPro: configure the maid team model in Settings → Katya before starting a member.')
+    if (!Number.isSafeInteger(maxTokens) || maxTokens < 0) throw new Error('LeaderPro: maximum output tokens must be a positive integer or the model default.')
+    // Explicit undefined clears parent-owned values even when the route is unchanged.
+    const options = { provider, model, reasoningEffort: reasoningEffort || undefined, maxTokens: maxTokens || undefined }
+    const llm = this.ctx.get('llm')
+    if (!llm) throw new Error('LeaderPro: the model service is unavailable.')
+    const resolved = await llm.resolveCallConfig(options, signal)
+    return { ...options, ...resolved }
+  }
+}
 
 /** The prompt registry this row contributes to. */
 export const inject = ['systemPrompt']
@@ -35,7 +68,8 @@ const DESCRIPTION_RULE = [
  * reads as a rule about tool calls rather than part of the persona.
  * @param ctx - the profile-scope context this row mounts in.
  */
-export function apply(ctx) {
+export function apply(ctx, config) {
+  ctx.plugin(KatyaMemberModels, config)
   ctx.effect(function () {
     return ctx.systemPrompt.section({
       name: DESCRIPTION_SECTION,

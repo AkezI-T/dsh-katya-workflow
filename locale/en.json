@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Katya Workflow",
-    "description": "Katya preset collection: the persona loads from the bundled persona.md, the package offers both a workflow preset and a Creator-mode preset, and it ships the Katya Steps summary and the return-to-question components."
+    "description": "Katya presets share a bundled persona across Workflow, Creator, and LeaderPro. LeaderPro enables Teams by default: the root handles discussion, core investigation, and acceptance; members plan and implement. Its dedicated settings control the member provider, model, reasoning effort, and maximum output tokens. Also includes step summaries and return-to-question scrolling."
   }
 }

@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Katya 工作流",
-    "description": "Katya 预设组合：人格从包内 persona.md 加载，提供工作流编排与创造模式两个预设，并附带步骤摘要与回复回跳两个聊天区组件。"
+    "description": "Katya 预设组合：共享包内人格，提供工作流、创造与 LeaderPro 女仆长三个预设。LeaderPro 默认启用 Team，根角色负责讨论、核心调查与验收，成员负责拆解与实施；专属设置统一控制成员供应商、模型、推理强度与最大输出 Token。另附步骤摘要与回复回跳。"
   }
 }

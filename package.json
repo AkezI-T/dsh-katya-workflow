@@ -1,15 +1,16 @@
 {
   "name": "@local/dsh-katya-workflow",
-  "version": "1.1.1",
+  "version": "1.3.0",
   "private": true,
   "type": "module",
-  "description": "Katya 预设组合：人格随包内 persona.md 加载，提供工作流编排与创造模式两个预设，并附带步骤摘要与回复回跳两个聊天区组件。",
+  "description": "Katya 预设组合：人格随包内 persona.md 加载，提供工作流、创造与 LeaderPro 女仆长三个预设；LeaderPro 专属设置统一控制成员模型，并附带步骤摘要与回复回跳。",
   "icon": "assets/plugin-icon.png",
   "license": "MIT",
   "main": "lib/index.js",
   "exports": {
     ".": "./lib/index.js",
     "./client": "./lib/client.js",
+    "./leaderpro": "./lib/leaderpro.js",
     "./persona-file.mjs": "./persona-file.mjs",
     "./custom-bash.mjs": "./custom-bash.mjs",
     "./package.json": "./package.json",
@@ -30,11 +31,17 @@
   "scripts": {
     "build": "node tools/build.mjs"
   },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.1.0",
+    "@deepseek-ai/schemastery": "~3.19.0",
+    "@deepseek-ai/dsh-tools": "0.2.2-rc.3"
+  },
   "dsh": {
     "bundle": {
       "patch": [
         "./cordis.patch.yml",
         "./katya-creator.patch.yml",
+        "./katya-leaderpro.patch.yml",
         "./plugin.patch.yml"
       ]
     },
