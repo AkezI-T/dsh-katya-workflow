@@ -24,6 +24,10 @@ export const Config = z.object({
   memberModel: z.string().default('').volatile(),
   memberReasoningEffort: z.string().default('').volatile(),
   memberMaxTokens: z.number().step(1).min(0).max(Number.MAX_SAFE_INTEGER).default(0).volatile(),
+  coordinatorProvider: z.string().default('').volatile(),
+  coordinatorModel: z.string().default('').volatile(),
+  coordinatorReasoningEffort: z.string().default('').volatile(),
+  coordinatorMaxTokens: z.number().step(1).min(0).max(Number.MAX_SAFE_INTEGER).default(0).volatile(),
   memberMaxDepth: z.number().step(1).min(0).max(1).default(1).volatile(),
   memberMaxCount: z.number().step(1).min(1).max(Number.MAX_SAFE_INTEGER).default(8).volatile(),
 })
@@ -75,12 +79,14 @@ class KatyaMemberModels extends Service {
     }
   }
 
-  async options(signal) {
-    const provider = this.config.memberProvider.get().trim()
-    const model = this.config.memberModel.get().trim()
-    const reasoningEffort = this.config.memberReasoningEffort.get().trim()
-    const maxTokens = this.config.memberMaxTokens.get()
-    if (!provider || !model) throw new Error('LeaderPro: configure the maid team model in Settings → Katya before starting a member.')
+  async options(role, signal) {
+    const prefix = role === 'coordinator' ? 'coordinator' : 'member'
+    const provider = this.config[prefix + 'Provider'].get().trim()
+    const model = this.config[prefix + 'Model'].get().trim()
+    const reasoningEffort = this.config[prefix + 'ReasoningEffort'].get().trim()
+    const maxTokens = this.config[prefix + 'MaxTokens'].get()
+    if (role === 'coordinator' && !provider && !model && !reasoningEffort && maxTokens === 0) return undefined
+    if (!provider || !model) throw new Error('LeaderPro: configure the ' + role + ' model in Settings → Katya before starting this member.')
     if (!Number.isSafeInteger(maxTokens) || maxTokens < 0) throw new Error('LeaderPro: maximum output tokens must be a positive integer or the model default.')
     // Explicit undefined clears parent-owned values even when the route is unchanged.
     const options = { provider, model, reasoningEffort: reasoningEffort || undefined, maxTokens: maxTokens || undefined }
