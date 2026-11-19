@@ -2,7 +2,7 @@
 
 为 DeepSeek Harness 提供 Katya、Katya-Creator 与 Katya-LeaderPro 三个人格预设、工具步骤摘要，以及回答结束后的过程折叠和自动滚动。
 
-包名：`@local/dsh-katya-workflow`，当前版本 **1.3.3**，面向 **DSH 0.2.2-rc.3**。
+包名：`@local/dsh-katya-workflow`，当前版本 **1.3.4**，面向 **DSH 0.2.2-rc.5**。
 
 ## 安装与开始使用
 
@@ -178,11 +178,11 @@ node tools/verify-manifest.mjs
 | [注册检查](<tools/check-bundle.mjs>) | 检查客户端模块注册 |
 | [行为检查](<tools/check-behaviour.mjs>) | 本地模拟行为检查 |
 
-## DSH 0.2.2-rc.3 适配
+## DSH 0.2.2-rc.5 适配
 
-本包 1.3.3 面向 DSH 0.2.2-rc.3，三个预设均以官方 PTC 为基础。Katya-Creator 加入官方 Creator 的运行时探查、创作技能和插件管理入口；LeaderPro 通过独立 Host 模块提供成员职责、协调与工作模型设置及默认 Team。
+本包 1.3.4 面向 DSH 0.2.2-rc.5，三个预设均以官方 PTC 为基础。Katya-Creator 加入官方 Creator 的运行时探查、创作技能和插件管理入口；LeaderPro 通过独立 Host 模块提供成员职责、协调与工作模型设置及默认 Team。
 
-| 项目 | 1.3.3 行为 |
+| 项目 | 1.3.4 行为 |
 | --- | --- |
 | PTC | 直接挂载 `@deepseek-ai/dsh-tool-executor-ptc` |
 | 子代理模型 | Katya 与 Creator 使用 `modelSelection` / `modelDiscovery`；LeaderPro 分别使用协调模型和工作模型 |
@@ -194,7 +194,7 @@ node tools/verify-manifest.mjs
 
 预设沿用官方 PTC 的通用 workflow 停用设置；Ralph bundle 独立提供自己的工作流引擎。Creator 的技能目录按官方表达式从当前安装解析。`applyPatch: false` 与官方保持一致。
 
-运行依赖由 DSH 提供，manifest 声明 `@deepseek-ai/cordis ~4.1.0`、`@deepseek-ai/schemastery ~3.19.0` 与 `@deepseek-ai/dsh-tools 0.2.2-rc.3`。LeaderPro 依赖宿主的本地 spawn/fork、成员参数解析、Agent Teams、预设作用域及首步生命周期接口；升级 DSH 后需重新核对这些契约。
+运行依赖由 DSH 提供，manifest 声明 `@deepseek-ai/cordis ~4.1.0`、`@deepseek-ai/schemastery ~3.19.0` 与 `@deepseek-ai/dsh-tools 0.2.2-rc.5`。LeaderPro 依赖宿主的本地 spawn/fork、成员参数解析、Agent Teams、预设作用域及首步生命周期接口；升级 DSH 后需重新核对这些契约。
 
 ## 兼容边界
 
