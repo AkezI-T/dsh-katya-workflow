@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Katya Workflow",
-    "description": "Katya presets share a bundled persona across Workflow, Creator, and LeaderPro. LeaderPro enables Teams by default: the root handles discussion, core investigation, and acceptance; members plan and implement. Its dedicated settings control the member provider, model, reasoning effort, and maximum output tokens. Also includes step summaries and return-to-question scrolling."
+    "description": "Katya, Katya-Creator, Katya-LeaderPro, and Katya Ultra share a bundled persona. LeaderPro and Ultra enable Teams by default and use the same member model settings and limits. Ultra adds Creator’s runtime inspection, plugin management, and DSH authoring skill. Also includes step summaries and return-to-question scrolling."
   }
 }

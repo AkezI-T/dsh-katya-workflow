@@ -1,9 +1,9 @@
 {
   "name": "@local/dsh-katya-workflow",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "private": true,
   "type": "module",
-  "description": "Katya 预设组合：人格随包内 persona.md 加载，提供工作流、创造与 LeaderPro 女仆长三个预设；LeaderPro 可分别设置协调模型和工作模型，并附带步骤摘要与回复回跳。",
+  "description": "Katya 预设组合：共用包内人格，提供 Katya、Katya-Creator、Katya-LeaderPro 与 Katya Ultra 四个预设，并附带步骤摘要与回复回跳。",
   "icon": "assets/plugin-icon.png",
   "license": "MIT",
   "main": "lib/index.js",
@@ -42,6 +42,7 @@
         "./cordis.patch.yml",
         "./katya-creator.patch.yml",
         "./katya-leaderpro.patch.yml",
+        "./katya-ultra.patch.yml",
         "./plugin.patch.yml"
       ]
     },
