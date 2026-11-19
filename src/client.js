@@ -244,7 +244,18 @@ window.__ModuleLoader__.load({
       '.ks-pref-text { min-width: 0; }',
       '.ks-pref-title { font-size: 13px; color: var(--dsw-alias-label-primary); }',
       '.ks-pref-desc { margin-top: 2px; font-size: 12px; color: var(--dsw-alias-label-tertiary); }',
-      '.ks-selector { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border: 1px solid var(--dsw-alias-line-secondary, rgba(127, 127, 127, .24)); border-radius: 8px; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; font-size: 12px; cursor: pointer; }'
+      '.ks-selector { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border: 1px solid var(--dsw-alias-line-secondary, rgba(127, 127, 127, .24)); border-radius: 8px; background: transparent; color: var(--dsw-alias-label-secondary); font: inherit; font-size: 12px; cursor: pointer; }',
+      // The general-settings step rows mirror the shell's chat preference row.
+      // The modifier keeps every rule off the Katya page's own preference rows.
+      '.ks-pref-native { gap: 8px; padding: 16px 0; border-bottom: 0.5px solid var(--dsw-alias-border-l2); }',
+      '.ks-pref-native .ks-pref-text { flex: 1; display: flex; flex-direction: column; gap: 4px; padding-right: 48px; }',
+      '.ks-pref-native .ks-pref-title { font-size: 14px; font-weight: 400; line-height: 22px; }',
+      '.ks-pref-native .ks-pref-desc { margin-top: 0; font-weight: 400; line-height: 18px; }',
+      '.ks-pref-native .ks-selector { gap: 12px; height: 36px; padding: 0 14px; border: none; border-radius: var(--dsw-radius-md); background: var(--dsw-alias-bg-module-platform); font-size: 14px; line-height: 22px; color: var(--dsw-alias-label-primary); }',
+      '.ks-pref-native .ks-pref-chevron { flex: none; }',
+      '.ks-pref-native .ks-selector:disabled { cursor: default; }',
+      '@media (hover: hover) { .ks-pref-native .ks-selector:hover:not(:disabled) { background: var(--dsw-alias-interactive-bg-hover); } }',
+      '@media (max-width: 767px) { html:not([data-windows-titlebar]):not([data-platform="darwin"]) .ks-pref-native .ks-pref-text { padding-right: 16px; } }'
     ].concat([
       '.ks-member { margin-top: 20px; padding: 16px; border: 1px solid var(--dsw-alias-border-l2); border-radius: 8px; color: var(--dsw-alias-label-primary); }',
       '.ks-member h3 { margin: 0 0 8px; font: inherit; font-weight: 600; }',
@@ -898,6 +909,8 @@ window.__ModuleLoader__.load({
       var open = pair[0]
       var setOpen = pair[1]
       var buttonRef = React.useRef(null)
+      // Native rows leave the chevron at its default size, as the shell's row does.
+      var nativeRow = props.appearance === 'native'
       var selector = h('button', {
         ref: buttonRef,
         type: 'button',
@@ -906,9 +919,9 @@ window.__ModuleLoader__.load({
         'aria-expanded': open,
         disabled: props.disabled,
         onClick: function () { setOpen(!open) }
-      }, props.selectedLabel, h(primitives.IconChevronDownOutlineRegular, { size: 12 }))
+      }, props.selectedLabel, h(primitives.IconChevronDownOutlineRegular, nativeRow ? { className: 'ks-pref-chevron' } : { size: 12 }))
 
-      return h('div', { className: 'ks-pref' },
+      return h('div', { className: nativeRow ? 'ks-pref ks-pref-native' : 'ks-pref' },
         h('div', { className: 'ks-pref-text' },
           h('div', { className: 'ks-pref-title' }, props.title),
           h('div', { className: 'ks-pref-desc' }, props.description)
@@ -958,6 +971,7 @@ window.__ModuleLoader__.load({
 
       return h(React.Fragment, null,
         h(Preference, {
+          appearance: 'native',
           title: t('mode.title'),
           description: t(managed ? 'final.managed' : 'mode.description'),
           disabled: finalState.busy,
@@ -967,6 +981,7 @@ window.__ModuleLoader__.load({
           onSelect: function (id) { props.chooseStepMode(id) }
         }),
         timing === undefined || managed ? null : h(Preference, {
+          appearance: 'native',
           title: t('collapse.title'),
           description: t('collapse.description'),
           value: timingValue,
@@ -975,6 +990,7 @@ window.__ModuleLoader__.load({
           onSelect: function (id) { props.setCollapseTiming(id) }
         }),
         !managed && mode !== 'verbose' && replies !== undefined ? h(Preference, {
+          appearance: 'native',
           title: t('replies.title'),
           description: t('replies.description'),
           value: replyValue,
